@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using TMS.Security.Core;
 
 namespace TMS.Security.DataAccess;
 
 public class DataBaseContext : IdentityDbContext<IdentityUser>
 {
     private readonly IConfiguration _configuration;
+
+    //public DbSet<User> Users {  get; set; }
 
     public DataBaseContext(IConfiguration configuration)
     {

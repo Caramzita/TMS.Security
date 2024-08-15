@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>fdc7811c-5ba5-44b8-b128-62fb5c748838</UserSecretsId>
-	<GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
+    <UserSecretsId>fdc7811c-5ba5-44b8-b128-62fb5c748838</UserSecretsId>	
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TMS.Security.DataAccess\TMS.Security.DataAccess.csproj" />
+    <ProjectReference Include="..\TMS.Security.Integration\TMS.Security.Integration.csproj" />
     <ProjectReference Include="..\TMS.Security.UseCases\TMS.Security.UseCases.csproj" />
   </ItemGroup>
 

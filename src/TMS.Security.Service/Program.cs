@@ -1,18 +1,20 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TMS.Security.DataAccess;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using TMS.Security.UseCases.Commands.Registration;
 using TMS.Security.UseCases.Abstractions;
 using TMS.Security.UseCases.Services;
+using TMS.Security.Integration;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+var xmlFilePath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+builder.Services.AddSwagger(xmlFilePath);
 
 builder.Services.AddDbContext<DataBaseContext>();
 
@@ -33,21 +35,11 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                };
-            });
+builder.Services.AddJwtBearerAuthentication(builder.Configuration);
+
+//builder.Configuration
+//    .SetBasePath(Directory.GetCurrentDirectory())
+//    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

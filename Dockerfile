@@ -8,9 +8,11 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
 WORKDIR /src
+COPY ["src/TMS.Security.Core/TMS.Security.Core.csproj", "TMS.Security.Core/"]
 COPY ["src/TMS.Security.Service/TMS.Security.Service.csproj", "TMS.Security.Service/"]
 COPY ["src/TMS.Security.DataAccess/TMS.Security.DataAccess.csproj", "TMS.Security.DataAccess/"]
 COPY ["src/TMS.Security.UseCases/TMS.Security.UseCases.csproj", "TMS.Security.UseCases/"]
+COPY ["src/TMS.Security.Integration/TMS.Security.Integration.csproj", "TMS.Security.Integration/"]
 
 WORKDIR /src/TMS.Security.Service
 RUN dotnet restore "TMS.Security.Service.csproj"

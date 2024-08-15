@@ -9,7 +9,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, IdentityR
 
     public RegisterCommandHandler(UserManager<IdentityUser> userManager)
     {
-        _userManager = userManager;
+        _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
     }
 
     public async Task<IdentityResult> Handle(RegisterCommand request, CancellationToken cancellationToken)

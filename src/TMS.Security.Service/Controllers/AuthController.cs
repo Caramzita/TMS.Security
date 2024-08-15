@@ -1,22 +1,24 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TMS.Security.UseCases.Commands;
 using TMS.Security.UseCases.Commands.Login;
 using TMS.Security.UseCases.Commands.Registration;
 
 namespace TMS.Security.Service.Controllers;
 
+[ApiController]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
 
     public AuthController(IMediator mediator)
     {
-        _mediator = mediator;
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Register([FromBody] RegisterCommand command)
     {
         var result = await _mediator.Send(command);
@@ -31,14 +33,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {
         var token = await _mediator.Send(command);
-
-        if (token == null)
-        {
-            return Unauthorized();
-        }
 
         return Ok(new { Token = token });
     }

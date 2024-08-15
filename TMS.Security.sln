@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.Security.DataAccess", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.Security.Service", "src\TMS.Security.Service\TMS.Security.Service.csproj", "{6AA3E6B6-AF5F-4B96-967C-1A496558E6D9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.Security.Integration", "src\TMS.Security.Integration\TMS.Security.Integration.csproj", "{9760343F-915A-49E5-8E43-C8EC7C92B2DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS.Security.Core", "src\TMS.Security.Core\TMS.Security.Core.csproj", "{45D0A5C1-7C05-4635-834E-7E302B79234C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{6AA3E6B6-AF5F-4B96-967C-1A496558E6D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AA3E6B6-AF5F-4B96-967C-1A496558E6D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AA3E6B6-AF5F-4B96-967C-1A496558E6D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9760343F-915A-49E5-8E43-C8EC7C92B2DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9760343F-915A-49E5-8E43-C8EC7C92B2DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9760343F-915A-49E5-8E43-C8EC7C92B2DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9760343F-915A-49E5-8E43-C8EC7C92B2DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45D0A5C1-7C05-4635-834E-7E302B79234C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D0A5C1-7C05-4635-834E-7E302B79234C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D0A5C1-7C05-4635-834E-7E302B79234C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D0A5C1-7C05-4635-834E-7E302B79234C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

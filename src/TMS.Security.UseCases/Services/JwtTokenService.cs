@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace TMS.Security.UseCases.Services;
 
@@ -15,30 +14,36 @@ public class JwtTokenService : IJwtTokenService
 
     public JwtTokenService(IConfiguration configuration)
     {
-        _configuration = configuration;
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
     public string GenerateToken(IdentityUser user)
     {
-        if (user == null) throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user, nameof(user));
 
-        var key = "7C791D0AD2D1A61736718914DB3D408BBAE06C9F988243CBEB903EB6DA0E1DD7";
-        var keyBytes = Encoding.UTF8.GetBytes(key);
-        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes("K17T6p+mYlBuIll6EOQDUmAdM6xmzeHOpE+O35zsAvw=");
+        //var issuer = _configuration["JwtSecurityToken:Issuer"];
+        //var audience = _configuration["JwtSecurityToken:Audience"];
+        //var expiresInMinutes = TimeSpan.FromMinutes(double.Parse(_configuration["JwtSecurityToken:Expires"]!));
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            //Issuer = issuer,
+            //Audience = audience,
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(JwtRegisteredClaimNames.Email)
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.Email, user.Email!)
             }),
-            Expires = DateTime.UtcNow.AddMinutes(60),
+            Expires = DateTime.UtcNow.Add(TimeSpan.FromMinutes(60)),
             SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature)
+                new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
+        var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
+
         return tokenHandler.WriteToken(token);
     }
 }

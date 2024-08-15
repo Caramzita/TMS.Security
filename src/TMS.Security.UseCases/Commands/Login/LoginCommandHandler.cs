@@ -16,22 +16,22 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
                                SignInManager<IdentityUser> signInManager,
                                IJwtTokenService jwtTokenService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _jwtTokenService = jwtTokenService;
+        _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+        _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+        _jwtTokenService = jwtTokenService ?? throw new ArgumentNullException(nameof(jwtTokenService));
     }
 
     public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
-
-        if (user == null) 
-            return null;
+        var user = await _userManager.FindByEmailAsync(request.Email) 
+            ?? throw new UnauthorizedAccessException("Invalid email or password.");
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
-        if (!result.Succeeded) 
-            return null;
+        if (!result.Succeeded)
+        {
+            throw new UnauthorizedAccessException("Invalid email or password.");
+        }
 
         return _jwtTokenService.GenerateToken(user);
     }
