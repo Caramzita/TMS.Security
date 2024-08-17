@@ -5,6 +5,8 @@ using TMS.Security.UseCases.Abstractions;
 using TMS.Security.UseCases.Services;
 using TMS.Security.Integration;
 using System.Reflection;
+using TMS.Security.DataAccess.Repositories;
+using TMS.Security.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,9 @@ builder.Services.AddSwagger(xmlFilePath);
 builder.Services.AddDbContext<DataBaseContext>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(RegisterCommand).Assembly));
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<DataBaseContext>()

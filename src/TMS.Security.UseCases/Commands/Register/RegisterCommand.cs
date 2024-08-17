@@ -8,13 +8,20 @@ public class RegisterCommand : IRequest<IdentityResult>
 {
     [Required]
     [StringLength(100, MinimumLength = 3)]
-    public string Username { get; set; } = string.Empty;
+    public string Username { get; } = string.Empty;
 
     [Required]
     [StringLength(100, MinimumLength = 4)]
     [DataType(DataType.Password)]
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; } = string.Empty;
 
     [Required]
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; } = string.Empty;
+
+    public RegisterCommand(string username, string password, string email)
+    {
+        Username = username;
+        Password = password;
+        Email = email;
+    }
 }

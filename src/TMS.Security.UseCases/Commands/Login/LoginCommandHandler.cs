@@ -6,15 +6,16 @@ namespace TMS.Security.UseCases.Commands.Login;
 
 public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
 {
+    //private readonly 
     private readonly UserManager<IdentityUser> _userManager;
 
     private readonly SignInManager<IdentityUser> _signInManager;
 
-    private readonly IJwtTokenService _jwtTokenService;
+    private readonly ITokenService _jwtTokenService;
 
     public LoginCommandHandler(UserManager<IdentityUser> userManager,
                                SignInManager<IdentityUser> signInManager,
-                               IJwtTokenService jwtTokenService)
+                               ITokenService jwtTokenService)
     {
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));

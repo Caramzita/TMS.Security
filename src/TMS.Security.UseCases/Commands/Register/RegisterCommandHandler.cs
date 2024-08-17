@@ -1,22 +1,25 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using TMS.Security.Core;
+using TMS.Security.UseCases.Abstractions;
+using TMS.Security.UseCases.Commands.Login;
 
 namespace TMS.Security.UseCases.Commands.Registration;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, IdentityResult>
+public class RegisterCommandHandler : LoginBaseHandler, IRequestHandler<RegisterCommand, IdentityResult>
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUserRepository _userRepository;
 
-    public RegisterCommandHandler(UserManager<IdentityUser> userManager)
+    public RegisterCommandHandler(IUserRepository userRepository)
     {
-        _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
-    public async Task<IdentityResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<List<string>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var existingUser = await _userManager.FindByEmailAsync(request.Email);
+        var existingUser = await _userRepository.ExistsByEmailAsync(request.Email);
 
-        if (existingUser != null)
+        if (!existingUser)
         {
             var error = new IdentityError
             {
@@ -26,9 +29,9 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, IdentityR
             return IdentityResult.Failed(error);
         }
 
-        var user = new IdentityUser { UserName = request.Username, Email = request.Email };
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var user = new User(request.Username, request.Password, request.Email);
+        var result = await _userRepository.CreateAsync(user);
 
-        return result;
+        return await ContinueLoginHandle(user);
     }
 }

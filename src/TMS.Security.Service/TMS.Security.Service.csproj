@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TMS.Security.Contracts\TMS.Security.Contracts.csproj" />
     <ProjectReference Include="..\TMS.Security.DataAccess\TMS.Security.DataAccess.csproj" />
     <ProjectReference Include="..\TMS.Security.Integration\TMS.Security.Integration.csproj" />
     <ProjectReference Include="..\TMS.Security.UseCases\TMS.Security.UseCases.csproj" />

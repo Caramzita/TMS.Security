@@ -1,6 +1,8 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TMS.Security.Contracts.Requests;
 using TMS.Security.UseCases.Commands.Login;
 using TMS.Security.UseCases.Commands.Registration;
 
@@ -12,32 +14,41 @@ public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public AuthController(IMediator mediator)
+    private readonly IMapper _mapper;
+
+    public AuthController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Register([FromBody] RegisterCommand command)
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
+        var command = _mapper.Map<RegisterCommand>(request);
         var result = await _mediator.Send(command);
-
-        if (!result.Succeeded)
-        {
-            var errors = result.Errors.Select(e => e.Description).ToArray();
-            return BadRequest(new { Errors = errors });
-        }
 
         return Ok();
     }
 
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Login([FromBody] LoginCommand command)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
+        var command = _mapper.Map<LoginCommand>(request);
         var token = await _mediator.Send(command);
 
         return Ok(new { Token = token });
+    }
+
+    public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+    {
+
+    }
+
+    public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
+    {
+
     }
 }
