@@ -1,11 +1,13 @@
 ﻿using MediatR;
+using TMS.Application.UseCases;
+using TMS.Security.Contracts;
 using TMS.Security.UseCases.Abstractions;
 using TMS.Security.UseCases.Commands.Login;
 using TMS.Security.UseCases.Services;
 
 namespace TMS.Security.UseCases.Commands.RefreshTokens;
 
-public class RefreshTokensCommandHandler : LoginBaseHandler, IRequestHandler<RefreshTokensCommand>
+public class RefreshTokensCommandHandler : LoginBaseHandler, IRequestHandler<RefreshTokensCommand, Result<Tokens>>
 {
     private readonly IUserRepository _userRepository;
 
@@ -15,19 +17,20 @@ public class RefreshTokensCommandHandler : LoginBaseHandler, IRequestHandler<Ref
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
-    public async Task Handle(RefreshTokensCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Tokens>> Handle(RefreshTokensCommand request, CancellationToken cancellationToken)
     {
         var refreshToken = await _tokenService.DeactivateRefreshToken(request.RefreshToken);
 
         if (refreshToken is null)
         {
-            return;
+            return Result<Tokens>.Invalid("Refresh token is incorrect");
         }
 
         var user = await _userRepository.GetByIdAsync(refreshToken.UserId);
+
         if (user == null)
         {
-            throw new InvalidOperationException("User not found.");
+            return Result<Tokens>.Invalid("User not found.");
         }
 
         return await ContinueLoginHandle(user);

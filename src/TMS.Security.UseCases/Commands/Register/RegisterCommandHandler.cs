@@ -1,36 +1,37 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
+using TMS.Application.UseCases;
+using TMS.Security.Contracts;
 using TMS.Security.Core;
 using TMS.Security.UseCases.Abstractions;
 using TMS.Security.UseCases.Commands.Login;
 
-namespace TMS.Security.UseCases.Commands.Registration;
+namespace TMS.Security.UseCases.Commands.Register;
 
-public class RegisterCommandHandler : LoginBaseHandler, IRequestHandler<RegisterCommand, IdentityResult>
+public class RegisterCommandHandler : LoginBaseHandler, IRequestHandler<RegisterCommand, Result<Tokens>>
 {
     private readonly IUserRepository _userRepository;
 
-    public RegisterCommandHandler(IUserRepository userRepository)
+    public RegisterCommandHandler(IUserRepository userRepository, ITokenService tokenService)
+        : base(tokenService)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
-    public async Task<List<string>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Tokens>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var existingUser = await _userRepository.ExistsByEmailAsync(request.Email);
-
-        if (!existingUser)
+        if (await _userRepository.GetByUsernameAsync(request.Username) != null)
         {
-            var error = new IdentityError
-            {
-                Code = "DuplicateEmail",
-                Description = "Email is already taken."
-            };
-            return IdentityResult.Failed(error);
+            return Result<Tokens>.Invalid("User with this login already exists");
+        }
+
+        if (await _userRepository.ExistsByEmailAsync(request.Email))
+        {
+            return Result<Tokens>.Invalid("User with this email already exists");
         }
 
         var user = new User(request.Username, request.Password, request.Email);
-        var result = await _userRepository.CreateAsync(user);
+
+        await _userRepository.CreateAsync(user);
 
         return await ContinueLoginHandle(user);
     }

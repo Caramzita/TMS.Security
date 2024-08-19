@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using TMS.Security.DataAccess;
-using TMS.Security.UseCases.Commands.Registration;
 using TMS.Security.UseCases.Abstractions;
 using TMS.Security.UseCases.Services;
 using TMS.Security.Integration;
 using System.Reflection;
 using TMS.Security.DataAccess.Repositories;
 using TMS.Security.Core;
+using TMS.Security.UseCases.Commands.Register;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +21,11 @@ builder.Services.AddSwagger(xmlFilePath);
 builder.Services.AddDbContext<DataBaseContext>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(RegisterCommand).Assembly));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<DataBaseContext>()
-    .AddDefaultTokenProviders();
 
 builder.Services.AddCors(options =>
 {
@@ -44,22 +42,6 @@ builder.Services.AddJwtBearerAuthentication(builder.Configuration);
 //builder.Configuration
 //    .SetBasePath(Directory.GetCurrentDirectory())
 //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    // Настройка опций идентификации
-    options.Password.RequireDigit = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 4;
-
-    // Настройки блокировки
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-
-    options.User.RequireUniqueEmail = true;
-});
 
 var app = builder.Build();
 

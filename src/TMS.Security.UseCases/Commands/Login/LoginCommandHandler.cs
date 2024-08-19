@@ -1,39 +1,35 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
+using TMS.Application.UseCases;
+using TMS.Security.Contracts;
+using TMS.Security.Core.Services;
 using TMS.Security.UseCases.Abstractions;
 
 namespace TMS.Security.UseCases.Commands.Login;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
+public class LoginCommandHandler : LoginBaseHandler, IRequestHandler<LoginCommand, Result<Tokens>>
 {
-    //private readonly 
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUserRepository _userRepository;
 
-    private readonly SignInManager<IdentityUser> _signInManager;
-
-    private readonly ITokenService _jwtTokenService;
-
-    public LoginCommandHandler(UserManager<IdentityUser> userManager,
-                               SignInManager<IdentityUser> signInManager,
-                               ITokenService jwtTokenService)
+    public LoginCommandHandler(IUserRepository userRepository,
+                               ITokenService tokenService) : base(tokenService)
     {
-        _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-        _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
-        _jwtTokenService = jwtTokenService ?? throw new ArgumentNullException(nameof(jwtTokenService));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
-    public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Tokens>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email) 
-            ?? throw new UnauthorizedAccessException("Invalid email or password.");
+        var user = await _userRepository.GetByUsernameAsync(request.Username);
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-
-        if (!result.Succeeded)
+        if (user == null)
         {
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            return Result<Tokens>.Invalid("Invalid password or login");
         }
 
-        return _jwtTokenService.GenerateToken(user);
+        if (!CryptographyService.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt))
+        {
+            return Result<Tokens>.Invalid("Incorrect password");
+        }
+
+        return await ContinueLoginHandle(user);
     }
 }

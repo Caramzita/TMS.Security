@@ -1,10 +1,11 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using TMS.Application.UseCases;
+using TMS.Security.Contracts;
 
-namespace TMS.Security.UseCases.Commands.Registration;
+namespace TMS.Security.UseCases.Commands.Register;
 
-public class RegisterCommand : IRequest<IdentityResult>
+public class RegisterCommand : IRequest<Result<Tokens>>
 {
     [Required]
     [StringLength(100, MinimumLength = 3)]

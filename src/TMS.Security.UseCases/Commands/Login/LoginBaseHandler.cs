@@ -1,4 +1,6 @@
-﻿using TMS.Security.Core;
+﻿using TMS.Application.UseCases;
+using TMS.Security.Contracts;
+using TMS.Security.Core;
 using TMS.Security.UseCases.Abstractions;
 
 namespace TMS.Security.UseCases.Commands.Login;
@@ -18,6 +20,6 @@ public abstract class LoginBaseHandler
         RefreshToken refreshToken = await _tokenService.GenerateRefreshToken(user.Id);
 
         return Result<Tokens>.Success(
-            new Tokens(accessToken, refreshToken.Token, refreshToken.Expiration));
+            new Tokens(accessToken, refreshToken.Token, refreshToken.Expires));
     }
 }

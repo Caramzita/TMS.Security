@@ -1,20 +1,22 @@
 ﻿using MediatR;
 using System.ComponentModel.DataAnnotations;
+using TMS.Application.UseCases;
+using TMS.Security.Contracts;
 
 namespace TMS.Security.UseCases.Commands.Login;
 
-public class LoginCommand : IRequest<string>
+public class LoginCommand : IRequest<Result<Tokens>>
 {
     [Required]
-    public string Email { get; } = string.Empty;
+    public string Username { get; } = string.Empty;
 
     [Required]
     [DataType(DataType.Password)]
     public string Password { get; } = string.Empty;
 
-    public LoginCommand(string email, string password)
+    public LoginCommand(string username, string password)
     {
-        Email = email;
+        Username = username;
         Password = password;
     }
 }

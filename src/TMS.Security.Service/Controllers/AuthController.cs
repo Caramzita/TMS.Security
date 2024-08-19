@@ -2,9 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TMS.Application.UseCases;
 using TMS.Security.Contracts.Requests;
+using TMS.Security.UseCases.Commands.ChangePassword;
 using TMS.Security.UseCases.Commands.Login;
-using TMS.Security.UseCases.Commands.Registration;
+using TMS.Security.UseCases.Commands.RefreshTokens;
+using TMS.Security.UseCases.Commands.Register;
 
 namespace TMS.Security.Service.Controllers;
 
@@ -29,7 +32,7 @@ public class AuthController : ControllerBase
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _mediator.Send(command);
 
-        return Ok();
+        return result.ToActionResult();
     }
 
     [HttpPost("login")]
@@ -37,18 +40,26 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var command = _mapper.Map<LoginCommand>(request);
-        var token = await _mediator.Send(command);
+        var result = await _mediator.Send(command);
 
-        return Ok(new { Token = token });
+        return result.ToActionResult();
     }
 
+    [HttpPut("changePassword")]
     public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
     {
+        var command = _mapper.Map<ChangePasswordCommand>(request);
+        var result = await _mediator.Send(command);
 
+        return result.ToActionResult();
     }
 
+    [HttpPost("refreshTokens")]
     public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
     {
+        var command = _mapper.Map<RefreshTokensCommand>(request);
+        var result = await _mediator.Send(command);
 
+        return result.ToActionResult();
     }
 }
