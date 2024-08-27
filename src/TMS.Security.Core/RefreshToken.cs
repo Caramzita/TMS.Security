@@ -47,15 +47,16 @@ public class RefreshToken
     }
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="RefreshToken"/> 
-    /// с указанной датой истечения срока действия, идентификатором пользователя и состоянием использования.
+    /// Конструктор для инициализации модели уже существующего токена обновления.
     /// </summary>
     /// <param name="expires"> Дата и время истечения срока действия токена. </param>
     /// <param name="userId"> Идентификатор пользователя. </param>
     /// <param name="isUsed"> Значение, указывающее, был ли токен использован. </param>
-    public RefreshToken(DateTime expires, Guid userId, bool isUsed) 
+    public RefreshToken(Guid id, string token, DateTime expires, Guid userId, bool isUsed) 
         : this(expires, userId)
     {
+        Id = id;
+        Token = token;
         IsUsed = isUsed;
     }
 

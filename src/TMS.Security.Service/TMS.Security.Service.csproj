@@ -22,7 +22,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="TMS.Application.Consul" Version="1.0.2" />
-    <PackageReference Include="TMS.Application.Security" Version="1.0.5" />
+    <PackageReference Include="TMS.Application.Security" Version="1.0.6" />
     <PackageReference Include="TMS.Application.UseCases.DI" Version="1.0.1" />
   </ItemGroup>
 

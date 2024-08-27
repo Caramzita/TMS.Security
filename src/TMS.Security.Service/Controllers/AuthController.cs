@@ -16,6 +16,7 @@ namespace TMS.Security.Service.Controllers;
 /// Предоставляет Rest API для работы с авторизацией пользователей
 /// </summary>
 [ApiController]
+[Route("api/[controller]")]
 [AllowAnonymous]
 public class AuthController : ControllerBase
 {
@@ -86,7 +87,7 @@ public class AuthController : ControllerBase
     [HttpPut("changePassword")]
     [ProducesResponseType(typeof(Tokens), 200)]
     [ProducesResponseType(typeof(List<string>), 400)]
-    public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         var command = _mapper.Map<ChangePasswordCommand>(request);
         var result = await _mediator.Send(command);
@@ -103,7 +104,7 @@ public class AuthController : ControllerBase
     [HttpPost("refreshTokens")]
     [ProducesResponseType(typeof(Tokens), 200)]
     [ProducesResponseType(typeof(List<string>), 400)]
-    public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
     {
         var command = _mapper.Map<RefreshTokensCommand>(request);
         var result = await _mediator.Send(command);

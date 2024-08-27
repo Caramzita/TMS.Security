@@ -66,8 +66,7 @@ public class Program
 
         services.AddJwtSettingsFromConsul(builder.Configuration["ConsulKey"]);
 
-        var settings = services.BuildServiceProvider().GetRequiredService<IOptions<JwtTokenSettings>>().Value;
-        services.AddJwtBearerAuthentication(settings);
+        services.AddJwtBearerAuthentication();
 
         services.AddCors(options =>
         {
