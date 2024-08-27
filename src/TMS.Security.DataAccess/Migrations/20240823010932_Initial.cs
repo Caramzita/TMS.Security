@@ -17,7 +17,8 @@ namespace TMS.Security.DataAccess.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    PasswordHash = table.Column<byte[]>(type: "bytea", nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>

@@ -12,7 +12,7 @@ using TMS.Security.DataAccess;
 namespace TMS.Security.DataAccess.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20240819001215_Initial")]
+    [Migration("20240823010932_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -61,9 +61,13 @@ namespace TMS.Security.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("bytea");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<string>("Username")
                         .IsRequired()
